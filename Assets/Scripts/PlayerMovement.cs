@@ -4,16 +4,6 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-
-    public enum Color { Red, Blue, Yellow, Purple }
-
-    public bool Red;
-    public bool Blue;
-    public bool Yellow;
-    public bool Purple;
-
-    public float score;
-
     public float moveSpeed;
 
     public float rotationRate = 90;
