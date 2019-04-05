@@ -12,11 +12,13 @@ public class Enemy_AI : MonoBehaviour
 
     Vector3 targetCord;
 
-    public Vector3 usualSpot;
+    public Transform usualSpot;
 
     public bool timeToAttack;
 
-    NavMeshAgent thisHunter;
+    public NavMeshAgent thisHunter;
+
+    NPC_AI targetScript;
     
     // Start is called before the first frame update
     void Start()
@@ -27,17 +29,40 @@ public class Enemy_AI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        targetScript = follow.GetComponent<NPC_AI>();
+
         switch (timeToAttack)
         {
             case true:
-                follow = targets[Random.Range(0, 5)];
-                targetCord = follow.position;
-                thisHunter.SetDestination(targetCord);
+                target();
+                timeToAttack = false;
                 break;
             case false:
-                thisHunter.SetDestination(usualSpot);
+                //nothing
                 break;
         }
+    }
+    void target()
+    {
+        follow = targets[Random.Range(0, 5)];
+        if(targetScript.gameObject.activeInHierarchy == false)
+        {
+            target();
+        }
+        else
+        {
+            thisHunter.speed += 5;
+        }
 
+        targetCord = follow.position;
+        thisHunter.SetDestination(targetCord);
+
+        float timer = 0;
+        timer += Time.deltaTime;
+        if(timer > 10)
+        {
+            thisHunter.SetDestination(usualSpot.position);
+        }
     }
 }

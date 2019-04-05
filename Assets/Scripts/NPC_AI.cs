@@ -12,8 +12,11 @@ public class NPC_AI : MonoBehaviour
     public int currentLine = 0;
 
     public bool stayOnPlace = true;
+    public bool safe;
 
     EmptyCheck isDestEmpty;
+
+    Enemy_AI Enemy;
 
     public Material red;
     public Material blue;
@@ -33,6 +36,7 @@ public class NPC_AI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Enemy = GameObject.Find("Enemy").GetComponent<Enemy_AI>();
         colours npcColour = (colours)colours.ToObject(typeof(colours), Random.Range(0, 5));
 
         switch (npcColour) // Sometimes numbers will pop up in the enum
@@ -122,5 +126,23 @@ public class NPC_AI : MonoBehaviour
         }
 
         stayOnPlace = true; // automatically resets the bool so the action won't repeat itself untill it is supposed to.
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        switch(collision.gameObject.tag)
+        {
+            case "Enemy":
+                switch(safe)
+                {
+                    case true:
+                        // nothing
+                        break;
+                    case false:
+                        gameObject.SetActive(false);
+                        Enemy.thisHunter.SetDestination(Enemy.usualSpot.position);
+                        break;
+                }
+                break;
+        }
     }
 }
