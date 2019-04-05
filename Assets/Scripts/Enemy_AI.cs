@@ -6,6 +6,8 @@ using UnityEngine.AI;
 public class Enemy_AI : MonoBehaviour
 {
 
+    GameManager GM;
+
     public Transform[] targets;
 
     public Transform follow;
@@ -24,12 +26,14 @@ public class Enemy_AI : MonoBehaviour
     void Start()
     {
         thisHunter = this.GetComponent<NavMeshAgent>();
+        GM = GameObject.Find("Manager_Tracker").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        thisHunter.SetDestination(targetCord);
+        targetCord = follow.position;
         targetScript = follow.GetComponent<NPC_AI>();
 
         switch (timeToAttack)
@@ -46,23 +50,25 @@ public class Enemy_AI : MonoBehaviour
     void target()
     {
         follow = targets[Random.Range(0, 5)];
-        if(targetScript.gameObject.activeInHierarchy == false)
+        if(!follow.gameObject.activeInHierarchy == true)
         {
             target();
         }
         else
         {
             thisHunter.speed += 5;
+            thisHunter.acceleration += 10;
+            thisHunter.angularSpeed += 20;
         }
-
-        targetCord = follow.position;
-        thisHunter.SetDestination(targetCord);
-
-        float timer = 0;
-        timer += Time.deltaTime;
-        if(timer > 10)
+        StartCoroutine(GM.HuntUp());
+        
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        switch (collision.gameObject.tag)
         {
-            thisHunter.SetDestination(usualSpot.position);
+            
         }
     }
+
 }
